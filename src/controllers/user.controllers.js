@@ -20,7 +20,7 @@ const userLogin = asyncWrapper(async (req, res) => {
         const error = appErrors.createError("Invalid username or password",StatusCodes.UNAUTHORIZED,JSEND_STATUS.FAIL);
         throw error ;
     }
-    const valid = await bcrypt.compare(password, user.password);
+    const valid = bcrypt.compare(password, user.password);
     if (!valid) {
         const error = appErrors.createError("Invalid username or password",StatusCodes.UNAUTHORIZED,JSEND_STATUS.FAIL);
         throw error ;
