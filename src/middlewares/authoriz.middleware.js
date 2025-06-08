@@ -1,5 +1,5 @@
-import StatusCodes from "../utils/status.codes";
-import JSEND_STATUS from "../utils/http.status.message";
+import StatusCodes from "../utils/status.codes.js";
+import JSEND_STATUS from "../utils/http.status.message.js";
 const authorize = (roles = []) => {
     return async (req, res, next) => {
         try {
