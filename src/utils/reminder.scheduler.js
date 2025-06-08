@@ -1,4 +1,6 @@
 import schedule from 'node-schedule'
+import sendReminderEmail from './email.notifications.js';
+
 const schedularReminder = (task) => {
     if (task.reminderTime) {
 
@@ -6,6 +8,7 @@ const schedularReminder = (task) => {
         const reminderDate2 = new Date(task.reminderTime);
         schedule.scheduleJob(task._id.toString(), reminderDate2, () => {
             console.log(`Reminder for task ${task._id}: ${task.title} at ${task.reminderTime}`);
+            sendReminderEmail(task);
         });
     }
 };
