@@ -35,6 +35,11 @@ const taskSchema =new Schema({
         maxlength: [30, "Task category must not be more than 30 characters"],
         required:true
     },
+    reminderTime:{
+        type:Date,
+        default:null,
+        required:false,
+    },
     userID:{
         type:mongoose.SchemaTypes.ObjectId,
         ref:"User",
