@@ -2,6 +2,7 @@ import asyncWrapper from "../middlewares/async.wrapper.js";
 import Task from "../models/task.model.js";
 import appErrors from "../utils/app.errors.js";
 import JSEND_STATUS from "../utils/http.status.message.js";
+import schedularReminder from "../utils/reminder.scheduler.js";
 
 import StatusCodes from "../utils/status.codes.js";
 
@@ -10,6 +11,7 @@ const createTask = asyncWrapper(
     async (req, res) => {
         const user = req.user;
         const createdTask = await Task.create({ userID: user._id, ...req.body });
+        schedularReminder(createdTask);
         res.status(StatusCodes.CREATED).json({ status: "success", data: createdTask });
     }
 );
