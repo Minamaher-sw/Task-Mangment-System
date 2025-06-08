@@ -16,8 +16,54 @@ const createTask = asyncWrapper(
 
 const getAllTasks = asyncWrapper(
     async (req, res) => {
-        const allTasks = await Task.find({ userID: req.user._id },{__v :false}).populate("userID");
-        res.status(StatusCodes.OK).json({ status: "success", data: allTasks });
+        // pagination 
+        const query = req.query;
+        if(query && query.page !== undefined && query.limit !== undefined && Object.keys(query).length > 0){
+            const page = parseInt(query.page, 10) || 1;
+            const limit = parseInt(query.limit, 10) || 10;
+            const skip = (page - 1) * limit;
+            
+            const totalTasks = await Task.countDocuments({ userID: req.user._id });
+            const totalPages = Math.ceil(totalTasks / limit);
+
+            const tasks = await Task.find({ userID: req.user._id })
+                .skip(skip)
+                .limit(limit)
+                .populate("userID");
+
+            return res.status(StatusCodes.OK).json({
+                status: "success",
+                data: tasks,
+                pagination: {
+                    totalTasks,
+                    totalPages,
+                    currentPage: page,
+                    limit
+                }
+            });
+        }
+        else if(query && (query.priority || query.category || query.status || query.search)){
+            const filter = {};
+            if(query.priority) filter.priority = query.priority;
+            if(query.category) filter.category = query.category;
+            if(query.status) filter.status = query.status;
+            
+            const search = req.query.search
+            if (search) {
+                filter.$or = [
+                { title: { $regex: search, $options: "i" } },
+                { description: { $regex: search, $options: "i" } },
+                { category: { $regex: search, $options: "i" } },
+                ];
+            }
+            const tasks = await Task.find({ userID: req.user._id, ...filter },{__v :false}).populate("userID");
+            return res.status(StatusCodes.OK).json({ status: "success", data: tasks });
+
+        }
+        else{
+            const allTasks = await Task.find({ userID: req.user._id },{__v :false}).populate("userID");
+            return res.status(StatusCodes.OK).json({ status: "success", data: allTasks });
+        }
 }
 )
 
