@@ -1,6 +1,7 @@
 import schedule from 'node-schedule'
 import sendReminderEmail from './email.notifications.js';
-
+import sendWebPushNotification from './web.push.js';
+import { getSubscription } from './subscriptionStore.js';
 const schedularReminder = (task) => {
     if (task.reminderTime) {
 
@@ -9,6 +10,9 @@ const schedularReminder = (task) => {
         schedule.scheduleJob(task._id.toString(), reminderDate2, () => {
             console.log(`Reminder for task ${task._id}: ${task.title} at ${task.reminderTime}`);
             sendReminderEmail(task);
+            const subscription = getSubscription()
+            console.log(subscription)
+            sendWebPushNotification(subscription ,task);
         });
     }
 };
