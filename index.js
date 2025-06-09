@@ -1,17 +1,29 @@
 import express from "express";
 import "dotenv/config.js";
+import cors from "cors";
 import dbConnect from "./src/config/db.connection.js";
 import userRouter from "./src/routes/user.route.js";
 import auth from "./src/middlewares/auth.middleware.js";
 import taskRouter from "./src/routes/task.route.js";
 import JSEND_STATUS from "./src/utils/http.status.message.js";
+import { setSubscription } from "./src/utils/subscriptionStore.js";
 
 const app =express();
+app.use(cors());
 app.use(express.json());
 // eslint-disable-next-line no-undef
 const Port =process.env.PORT || 3001 ;
 const hostname="127.0.0.1"
 
+// 
+// eslint-disable-next-line no-unused-vars
+
+app.post("/api/save-subscription", (req, res) => {
+  let subscriptionStore = req.body;
+  setSubscription(subscriptionStore);
+  console.log("📥 Subscription saved",subscriptionStore);
+  res.status(201).json({ message: "Subscription saved" });
+});
 // database connection 
 dbConnect();
 // server listen 
