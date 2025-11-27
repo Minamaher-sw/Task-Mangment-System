@@ -1,0 +1,31 @@
+# Ignore node modules
+node_modules/
+
+# Ignore Git
+.git/
+.gitignore
+
+# Logs
+logs/
+*.log
+
+# eslint cache
+.eslintcache
+.eslint.confi 
+# Environment files
+.env
+*.env
+.env.local
+.env.*.local
+.env.prod
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker-related items
+Dockerfile
+docker-compose*
+
+# Build artifacts
+dist/
+build/
