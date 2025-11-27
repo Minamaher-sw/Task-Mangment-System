@@ -5,13 +5,13 @@ import JSEND_STATUS from "../utils/http.status.message.js";
 const auth = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        if (!authHeader) {
             return res.status(StatusCodes.UNAUTHORIZED).json({
                 status: JSEND_STATUS.FAIL,
                 message: "Authentication failed: Token missing or invalid"
             });
         }
-        const token = authHeader.split(" ")[1];
+        const token = authHeader;
         // eslint-disable-next-line no-undef
         const payload = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findOne({ username: payload.username });
