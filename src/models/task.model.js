@@ -40,6 +40,10 @@ const taskSchema =new Schema({
         default:null,
         required:false,
     },
+    read: { 
+        type: Boolean, 
+        default: false 
+    },
     userID:{
         type:mongoose.SchemaTypes.ObjectId,
         ref:"User",
