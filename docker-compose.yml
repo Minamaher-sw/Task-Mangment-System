@@ -2,6 +2,7 @@ version: '3.8'
 services:
   node-app:
     container_name: express_node_app_container
+    image: menadev123/my-node-app:tagname
     depends_on:
       - mongo
     env_file:
