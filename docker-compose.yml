@@ -1,6 +1,7 @@
 version: '3.8'
 services:
   node-app:
+    container_name: express_node_app_container
     depends_on:
       - mongo
     env_file:
@@ -14,12 +15,22 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+    healthcheck:
+      test:
+        - CMD
+        - mongo
+        - '--eval'
+        - db.adminCommand('ping')
+      interval: 5s
+      retries: 5
+      timeout: 5s
 
   mongo-express:
     image: mongo-express
     restart: always
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
     ports:
       - '8081:8081'
     environment:
@@ -27,8 +38,12 @@ services:
       ME_CONFIG_BASICAUTH_ENABLED: true
       ME_CONFIG_BASICAUTH_USERNAME: mongoexpressuser
       ME_CONFIG_BASICAUTH_PASSWORD: mongoexpresspass
+    condition: service_healthy
+    mongo:
+      condition: service_healthy
 
   redis:
+    container_name: redis_container
     image: redis:alpine
     depends_on:
       - node-app
@@ -40,6 +55,7 @@ services:
       - mypassword
 
   nginx:
+    container_name: nginx_container
     image: nginx:stable-alpine
     depends_on:
       - node-app
