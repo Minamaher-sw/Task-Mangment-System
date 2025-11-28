@@ -1,50 +1,55 @@
-FROM node:18 as base
-
-FROM base as development
-
+###############################
+# Base image (development env)
+###############################
+FROM node:18-alpine AS base
 WORKDIR /app
 
+################################
+# Development Stage
+################################
+FROM base AS development
+
+# Copy only package.json first (better caching)
 COPY package.json ./
 
+# Install ALL dependencies (dev + prod)
 RUN npm install
-RUN npm install -g nodemon 
 
+# Install nodemon for development only
+RUN npm install -g nodemon
+
+# Copy source code
 COPY ./src /app/src
 COPY index.js /app/index.js
 
 CMD ["nodemon", "--legacy-watch", "index.js"]
 
-FROM base as production
+
+################################
+# Production Dependencies
+################################
+FROM base AS deps
+
+COPY package.json ./
+
+# Install ONLY production dependencies
+RUN npm install --production
+
+
+################################
+# Final Production Image
+################################
+FROM node:18-alpine AS production
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./
+COPY --from=deps /app/node_modules ./node_modules
 
-RUN npm install --only=production
-
+# Copy source code (same paths you use)
 COPY ./src /app/src
 COPY index.js /app/index.js
 
-CMD [ "npm", "start" ]
+ENV NODE_ENV=production
 
-# FROM node:18
-
-# WORKDIR /app
-
-# COPY package*.json ./
-
-# ARG NODE_ENV
-
-# RUN if [ '$NODE_ENV' = "production" ]; then \
-#     npm install --only=production; \
-#     else \
-#     npm install && npm install -g nodemon; \
-#     fi
-
-# COPY ./src /app/src
-# COPY index.js /app/index.js
-
-# EXPOSE 3000
-
-# CMD ["node", "index.js"]
-
+CMD ["node", "index.js"]
