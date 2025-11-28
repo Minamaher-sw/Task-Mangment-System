@@ -29,8 +29,7 @@ services:
     image: mongo-express
     restart: always
     depends_on:
-      mongo:
-        condition: service_healthy
+      - mongo
     ports:
       - '8081:8081'
     environment:
@@ -38,9 +37,10 @@ services:
       ME_CONFIG_BASICAUTH_ENABLED: true
       ME_CONFIG_BASICAUTH_USERNAME: mongoexpressuser
       ME_CONFIG_BASICAUTH_PASSWORD: mongoexpresspass
-    condition: service_healthy
-    mongo:
-      condition: service_healthy
+    entrypoint:
+      - sh
+      - '-c'
+      - sleep 10 && docker-entrypoint.sh
 
   redis:
     container_name: redis_container
