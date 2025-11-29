@@ -38,7 +38,8 @@ app.post("/api/save-subscription", (req, res) => {
 // database connection
 // server listen
 app.get("/", (req, res) => {
-  res.send("Server is running successfully");
+  console.log("Server is running successfully at backend for production stage");
+  res.send("Server is running successfully at backend for production stage");
 });
 try {
   await dbConnect();
