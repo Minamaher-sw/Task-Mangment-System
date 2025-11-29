@@ -1,12 +1,16 @@
 version: '3.8'
+
 services:
   node-app:
-    container_name: express_node_app_container
     image: menadev123/my-node-app:tagname
-    depends_on:
-      - mongo
     env_file:
       - ./.env
+    expose:
+      - "4000"          # مهم جداً للـ load balancing
+    depends_on:
+      - mongo
+    networks:
+      - app-network     # شبكة مشتركة مع nginx
 
   mongo:
     image: mongo
@@ -25,6 +29,8 @@ services:
       interval: 5s
       retries: 5
       timeout: 5s
+    networks:
+      - app-network
 
   mongo-express:
     image: mongo-express
@@ -38,18 +44,20 @@ services:
       ME_CONFIG_BASICAUTH_ENABLED: true
       ME_CONFIG_BASICAUTH_USERNAME: mongoexpressuser
       ME_CONFIG_BASICAUTH_PASSWORD: mongoexpresspass
+    networks:
+      - app-network
 
   redis:
     container_name: redis_container
     image: redis:alpine
-    depends_on:
-      - node-app
     ports:
       - '6379:6379'
     command:
       - redis-server
       - '--requirepass'
       - mypassword
+    networks:
+      - app-network
 
   nginx:
     container_name: nginx_container
@@ -59,13 +67,14 @@ services:
     ports:
       - '80:80'
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-    environment:
-      - NGINX_HOST=foobar.com
-      - NGINX_PORT=80
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - app-network
 
 volumes:
   mongo-data:
     driver: local
-  redis-data:
-    driver: local
+
+networks:
+  app-network:
+    driver: bridge
