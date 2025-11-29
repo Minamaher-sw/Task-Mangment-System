@@ -39,7 +39,7 @@ app.post("/api/save-subscription", (req, res) => {
 // server listen
 app.get("/", (req, res) => {
   console.log("Server is running successfully at backend for production stage");
-  res.send("Server is running successfully at backend for production stage");
+  res.send("Server is running successfully at backend for production stage and make watchtower 12");
 });
 try {
   await dbConnect();
