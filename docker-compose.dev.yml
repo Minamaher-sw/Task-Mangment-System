@@ -1,9 +1,23 @@
+# version: '3.8'
+# services:
+#   node-app:
+#     build:
+#       context: .
+#       target: development
+#     volumes:
+#       - ./index.js:/app/index.js:ro
+#       - ./src:/app/src:ro
+#     environment:
+#       - NODE_ENV=development
+
 version: '3.8'
+
 services:
   node-app:
     build:
       context: .
-      target: development
+      args:
+        BUILD_ENV: development
     volumes:
       - ./index.js:/app/index.js:ro
       - ./src:/app/src:ro
