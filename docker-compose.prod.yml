@@ -1,8 +1,19 @@
+# version: '3.8'
+# services:
+#   node-app:
+#     build:
+#       context: .
+#       target: production
+#     environment:
+#       - NODE_ENV=production
+
 version: '3.8'
+
 services:
   node-app:
     build:
       context: .
-      target: production
+      args:
+        BUILD_ENV: production
     environment:
       - NODE_ENV=production
