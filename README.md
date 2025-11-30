@@ -236,6 +236,10 @@ Below are the full documented routes based on your actual code.
 
 ---
 
+## PostMan Collection url
+You can import the PostMan collection for testing the API endpoints from the following URL:
+<url color="blue">https://minamaher-4135256.postman.co/workspace/Mina-Maher's-Workspace~40526f42-cb99-4de6-8b11-7cdd4ec7ddbc/collection/45122668-559836a1-c2de-4587-8cea-58ad3c6d5139?action=share&source=copy-link&creator=45122668</url>
+
 ## 🔔 Notifications System
 Supported notifications:
 - ✔ Email (Nodemailer)
